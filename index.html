@@ -1,0 +1,180 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<center>
+<div><h1>Tic tac toe program</h1></div>
+
+
+<input id="n" type="number" min="3" step="1" value="3">
+
+<input type="button" id="Start" value="Start">
+
+<div class="status"></div>
+<div class="box" id="box">
+</div>
+</center>
+<style>
+h1{
+	margin-top: 40px;
+}	
+input{
+	margin-top:10px;
+	margin-bottom:20px;
+}
+.box{
+	width:500px;
+	background-color:white;
+	height:500px;
+}
+.sub{
+	background-color:black;
+	border-style: solid;
+	border-color:white;
+	position:relative;
+	display:inline-grid;
+	box-sizing: border-box;
+}
+.sub:hover{
+	background-color:gray;
+}
+.status{
+	margin-bottom: 10px;
+}
+
+</style>
+<script>
+function setboard(){
+	$(".box").empty();
+	var n = document.getElementById('n').value;
+	var nd = 100/parseInt(n);
+	var count = 0;
+	var x = document.getElementsByClassName('sub');
+
+	for(i=0;i<(n*n);i++){
+		var text = "<div class='sub' id='"+ (i+1) +"' data-x='"+ (i+1) +"' data-val='"+ 0 +"'></div>";
+		$(".box").append(text);
+		x[i].style.width = nd+"%";
+		x[i].style.height = nd+"%";
+	}
+	
+
+	//game on
+	$( ".sub" ).click(function(el) {
+		//console.log(el);
+		var datax = $(this).attr("data-x");
+		var dataval = $(this).attr("data-val");
+		var color = "";
+		var coltu = "";
+
+		if(dataval == 0){
+
+			if(count%2 == 0){
+				//display
+				$(this).css('background-color','green');
+				$(this).attr("data-val",1);	
+				color = 'green';
+				coltu = 'blue';
+			}
+			else{
+				//display
+				$(this).css('background-color','blue');
+				$(this).attr("data-val",2);
+				color = 'blue';
+				coltu = 'green';
+			}
+
+			$('.status').empty();
+			$('.status').append('STATUS : Turn '+coltu);
+
+			// cannot do again
+			count +=1;
+
+			//check win
+			//check position
+			var px = Math.ceil(datax/n);
+			var py = Math.abs(datax%n)==0?n:Math.abs(datax%n);
+			console.log("("+px+","+py+")");
+			var sum = 0;
+			var sumy = 0;
+			var sumox = 0;
+			var nwin = n==3?3:4;
+			//row px col py
+			
+			for(a=1;a<=n;a++){
+				var setx = n*(px-1)+a;
+				var sety = n*(a-1)+parseInt(py);
+				
+				if($('#'+setx).attr('data-val') == $(this).attr('data-val')){
+					sum+=1;
+					if(sum == nwin){
+						winDOing(color);
+						break;
+					}
+				}
+				else{sum = sum *0;}	
+				if($('#'+sety).attr('data-val') == $(this).attr('data-val')){
+					sumy+=1;
+					if(sumy == nwin){
+						winDOing(color);
+						break;
+					}
+				}
+				else{sumys = sumy *0;}	
+			}
+
+			//cross
+			var arr = [-1,1];
+			for(cc=0;cc<arr.length;cc++){
+				sumox = 0;	
+				for(c=-3;c<=7;c++){
+
+					var ox = px-c;
+					var oy = py-(c*arr[cc]);
+					
+
+					if(ox<=0 || oy<=0 || ox>n || oy>n ){continue;}				
+
+					var pid = n*(ox-1)+oy;
+					if(pid>0 && pid<=(n*n)){
+						if($('#'+pid).attr('data-val') == $(this).attr('data-val')){
+							sumox+=1;
+							if(sumox == nwin){
+								winDOing(color);
+								break;
+							}
+						}
+						else{sumox = sumox*0;}
+
+					}
+				}
+			}
+			
+
+
+		}
+		else{
+				
+		}		
+	});
+}
+
+document.getElementById('Start').addEventListener("click",afterstart);
+
+function afterstart(){
+	setboard();
+	var n = document.getElementById('n').value;
+	$('.status').empty();
+	$('.status').append('START WITH green');
+	
+}
+function winDOing(name){
+	alert('winner is '+name);
+	setboard();
+}
+
+
+</script>
+</body>
+</html>
